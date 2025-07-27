@@ -17,3 +17,9 @@ def test_returns_sum_of_two_numbers():
     calc = StringCalculator()
     result = calc.add("1,2")
     assert result == 3
+
+
+def test_returns_sum_of_unknown_quantity_of_numbers():
+    calc = StringCalculator()
+    result = calc.add("1,2,3,4,5")
+    assert result == 15
