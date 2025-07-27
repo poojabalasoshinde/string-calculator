@@ -4,8 +4,8 @@ class StringCalculator:
 
     def add(self, numbers: str) -> int:
         self.call_count += 1
-        if numbers == "":
-            return 0
+        return 0 if numbers == "" else None
+    
 
     def get_called_count(self) -> int:
         return self.call_count
