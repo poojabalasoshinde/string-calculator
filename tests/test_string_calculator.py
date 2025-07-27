@@ -29,3 +29,9 @@ def test_returns_sum_when_newline_used_as_delimiter():
     calc = StringCalculator()
     result = calc.add("1\n2,3")
     assert result == 6
+
+
+def test_returns_sum_using_custom_single_char_delimiter():
+    calc = StringCalculator()
+    result = calc.add("//;\n1;2")
+    assert result == 3
