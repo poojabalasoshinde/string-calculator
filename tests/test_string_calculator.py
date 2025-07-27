@@ -1,4 +1,5 @@
 from calculator.string_calculator import StringCalculator
+import pytest
 
 
 def test_returns_zero_for_empty_string():
@@ -35,3 +36,15 @@ def test_returns_sum_using_custom_single_char_delimiter():
     calc = StringCalculator()
     result = calc.add("//;\n1;2")
     assert result == 3
+
+
+def test_raises_exception_for_negative_number():
+    calc = StringCalculator()
+    with pytest.raises(ValueError, match="negatives not allowed: -1"):
+        calc.add("-1")
+
+
+def test_raises_exception_with_all_negative_numbers():
+    calc = StringCalculator()
+    with pytest.raises(ValueError, match="negatives not allowed: -2, -4"):
+        calc.add("1,-2,3,-4")

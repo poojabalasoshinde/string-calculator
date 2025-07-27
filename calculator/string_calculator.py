@@ -11,7 +11,9 @@ class StringCalculator:
         return delimiters, input_str
 
     def add(self, numbers: str) -> int:
+        
         self.call_count += 1
+        
         if not numbers:
             return 0
         delimiters, numbers = self._extract_delimiters_and_numbers(numbers)
@@ -20,7 +22,15 @@ class StringCalculator:
             numbers = numbers.replace(delimiter, ",")
 
         parts = numbers.split(",")
-        return sum(int(n) for n in parts if n)
+        number_list = [int(n) for n in parts if n]
 
+        negatives = [str(n) for n in number_list if n < 0]
+
+        if negatives:
+            raise ValueError(f"negatives not allowed: {', '.join(negatives)}")
+
+        return sum(number_list)
+
+      
     def get_called_count(self) -> int:
         return self.call_count
