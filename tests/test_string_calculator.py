@@ -23,3 +23,9 @@ def test_returns_sum_of_unknown_quantity_of_numbers():
     calc = StringCalculator()
     result = calc.add("1,2,3,4,5")
     assert result == 15
+
+
+def test_returns_sum_when_newline_used_as_delimiter():
+    calc = StringCalculator()
+    result = calc.add("1\n2,3")
+    assert result == 6

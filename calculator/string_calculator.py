@@ -8,7 +8,7 @@ class StringCalculator:
         if not numbers:
             return 0
 
-        delimiters = [","]
+        delimiters = [",", "\n"]
         for delimiter in delimiters:
             numbers = numbers.replace(delimiter, ",")
 
