@@ -3,7 +3,7 @@ class StringCalculator:
         self.call_count = 0
 
     def _extract_delimiters_and_numbers(self, numbers: str) -> tuple[list[str], str]:
-        
+
         if numbers.startswith("//"):
             delimiter_part, numbers = numbers.split("\n", 1)
             delimiter_part = delimiter_part[2:]
@@ -17,6 +17,11 @@ class StringCalculator:
             delimiters = [",", "\n"]
 
         return delimiters, numbers
+
+    def _split_numbers(self, numbers: str, delimiters: list[str]) -> list[str]:
+        import re
+        delimiter_pattern = "|".join(re.escape(delim) for delim in delimiters)
+        return re.split(delimiter_pattern, numbers)
 
     def _ignore_large_numbers(self, numbers: list[int]) -> list[int]:
         return [n for n in numbers if n <= 1000]
