@@ -10,10 +10,13 @@ class StringCalculator:
             delimiters.append(custom_delim)
         return delimiters, input_str
 
+    def _ignore_large_numbers(self, numbers: list[int]) -> list[int]:
+        return [n for n in numbers if n <= 1000]
+
     def add(self, numbers: str) -> int:
-        
+
         self.call_count += 1
-        
+
         if not numbers:
             return 0
         delimiters, numbers = self._extract_delimiters_and_numbers(numbers)
@@ -29,8 +32,8 @@ class StringCalculator:
         if negatives:
             raise ValueError(f"negatives not allowed: {', '.join(negatives)}")
 
+        number_list = self._ignore_large_numbers(number_list)
         return sum(number_list)
 
-      
     def get_called_count(self) -> int:
         return self.call_count

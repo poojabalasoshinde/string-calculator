@@ -48,3 +48,17 @@ def test_raises_exception_with_all_negative_numbers():
     calc = StringCalculator()
     with pytest.raises(ValueError, match="negatives not allowed: -2, -4"):
         calc.add("1,-2,3,-4")
+
+
+def test_returns_how_many_times_add_was_called():
+    calc = StringCalculator()
+    calc.add("1,2")
+    calc.add("3")
+    assert calc.get_called_count() == 2
+
+
+def test_ignores_numbers_greater_than_1000():
+    calc = StringCalculator()
+    assert calc.add("2,1001") == 2
+    assert calc.add("1000,2") == 1002
+    assert calc.add("1234\n1") == 1
