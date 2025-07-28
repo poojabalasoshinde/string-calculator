@@ -74,3 +74,4 @@ def test_supports_multiple_delimiters():
     assert calc.add("//[*][%]\n1*2%3") == 6
     assert calc.add("//[**][%%]\n1**2%%3") == 6
     assert calc.add("//[!!][@@]\n1!!2@@3") == 6
+

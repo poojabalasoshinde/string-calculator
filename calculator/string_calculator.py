@@ -1,52 +1,77 @@
+from typing import List, Callable, Optional
+import re
+
+
 class StringCalculator:
+    """
+    A string-based calculator that supports add, subtract, multiply, divide
+    operations using custom or default delimiters in string input.
+    """
+
     def __init__(self):
-        self.call_count = 0
+        self._call_count = 0
+        self.add_occurred: Optional[Callable[[str, int], None]] = None
 
-    def _extract_delimiters_and_numbers(self, numbers: str) -> tuple[list[str], str]:
-
-        if numbers.startswith("//"):
-            delimiter_part, numbers = numbers.split("\n", 1)
+    def _extract_delimiters_and_numbers(
+        self, input_string: str
+    ) -> tuple[list[str], str]:
+        if input_string.startswith("//"):
+            delimiter_part, input_string = input_string.split("\n", 1)
             delimiter_part = delimiter_part[2:]
-
             if delimiter_part.startswith("["):
-                import re
                 delimiters = re.findall(r"\[(.*?)\]", delimiter_part)
             else:
                 delimiters = [delimiter_part]
         else:
             delimiters = [",", "\n"]
-
-        return delimiters, numbers
+        return delimiters, input_string
 
     def _split_numbers(self, numbers: str, delimiters: list[str]) -> list[str]:
-        import re
-        delimiter_pattern = "|".join(re.escape(delim) for delim in delimiters)
-        return re.split(delimiter_pattern, numbers)
+        pattern = "|".join(re.escape(d) for d in delimiters)
+        return re.split(pattern, numbers)
 
-    def _ignore_large_numbers(self, numbers: list[int]) -> list[int]:
+    def _parse_numbers(self, input_string: str) -> List[int]:
+        if not input_string:
+            return []
+
+        delimiters, number_string = self._extract_delimiters_and_numbers(input_string)
+        parts = self._split_numbers(number_string, delimiters)
+
+        try:
+            numbers = [int(n.strip()) for n in parts if n.strip()]
+        except ValueError:
+            raise ValueError("Invalid number in input")
+
+        self._validate_no_negatives(numbers)
         return [n for n in numbers if n <= 1000]
 
-    def add(self, numbers: str) -> int:
+    def _validate_no_negatives(self, numbers: List[int]) -> None:
+        negatives = [n for n in numbers if n < 0]
+        if negatives:
+            raise ValueError(f"negatives not allowed: {', '.join(map(str, negatives))}")
 
-        self.call_count += 1
+    def _execute(
+        self, input_string: str, operation: Callable[[int, int], int], identity: int
+    ) -> int:
+        self._call_count += 1
+        numbers = self._parse_numbers(input_string)
 
         if not numbers:
-            return 0
-        delimiters, numbers = self._extract_delimiters_and_numbers(numbers)
+            return identity
 
-        for delimiter in delimiters:
-            numbers = numbers.replace(delimiter, ",")
+        result = numbers[0]
+        for num in numbers[1:]:
+            result = operation(result, num)
 
-        parts = numbers.split(",")
-        number_list = [int(n) for n in parts if n]
+        if self.add_occurred:
+            self.add_occurred(input_string, result)
 
-        negatives = [str(n) for n in number_list if n < 0]
+        return result
 
-        if negatives:
-            raise ValueError(f"negatives not allowed: {', '.join(negatives)}")
+    def add(self, numbers: str) -> int:
+        return self._execute(numbers, lambda a, b: a + b, 0)
 
-        number_list = self._ignore_large_numbers(number_list)
-        return sum(number_list)
+    
 
     def get_called_count(self) -> int:
-        return self.call_count
+        return self._call_count
