@@ -71,7 +71,19 @@ class StringCalculator:
     def add(self, numbers: str) -> int:
         return self._execute(numbers, lambda a, b: a + b, 0)
 
-    
+    def subtract(self, numbers: str) -> int:
+        return self._execute(numbers, lambda a, b: a - b, 0)
+
+    def multiply(self, numbers: str) -> int:
+        return self._execute(numbers, lambda a, b: a * b, 1)
+
+    def divide(self, numbers: str) -> int:
+        def safe_divide(a: int, b: int) -> int:
+            if b == 0:
+                raise ZeroDivisionError("division by zero")
+            return a // b
+
+        return self._execute(numbers, safe_divide, 0)
 
     def get_called_count(self) -> int:
         return self._call_count

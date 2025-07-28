@@ -75,3 +75,139 @@ def test_supports_multiple_delimiters():
     assert calc.add("//[**][%%]\n1**2%%3") == 6
     assert calc.add("//[!!][@@]\n1!!2@@3") == 6
 
+
+def test_subtract_single_number_returns_itself():
+    calc = StringCalculator()
+    assert calc.subtract("10") == 10
+
+
+def test_subtract_empty_string_returns_zero():
+    calc = StringCalculator()
+    assert calc.subtract("") == 0
+
+
+def test_subtract_with_newlines_and_commas():
+    calc = StringCalculator()
+    assert calc.subtract("10\n2,1") == 7  
+
+
+def test_subtract_with_custom_delimiter():
+    calc = StringCalculator()
+    assert calc.subtract("//;\n10;3;2") == 5
+
+
+def test_subtract_ignores_large_numbers():
+    calc = StringCalculator()
+    assert calc.subtract("1005,1000,5") == 995  
+
+
+def test_subtract_raises_on_negative():
+    calc = StringCalculator()
+    with pytest.raises(ValueError) as excinfo:
+        calc.subtract("10,-2,-3")
+    msg = str(excinfo.value)
+    assert "negatives not allowed" in msg
+    assert "-2" in msg and "-3" in msg
+
+
+def test_subtract_supports_multi_char_delimiters():
+    calc = StringCalculator()
+    assert calc.subtract("//[***]\n20***5***2") == 13
+
+
+def test_subtract_supports_multiple_delimiters():
+    calc = StringCalculator()
+    assert calc.subtract("//[*][%]\n20*5%2") == 13
+
+
+def test_multiply_single_number_returns_itself():
+    calc = StringCalculator()
+    assert calc.multiply("7") == 7
+
+
+def test_multiply_empty_string_returns_one():
+    calc = StringCalculator()
+    assert calc.multiply("") == 1
+
+
+def test_multiply_with_newlines_and_commas():
+    calc = StringCalculator()
+    assert calc.multiply("2\n3,4") == 24  
+
+
+def test_multiply_with_custom_delimiter():
+    calc = StringCalculator()
+    assert calc.multiply("//;\n2;3;4") == 24
+
+
+def test_multiply_supports_multi_char_delimiters():
+    calc = StringCalculator()
+    assert calc.multiply("//[***]\n2***3***4") == 24
+
+
+def test_multiply_supports_multiple_delimiters():
+    calc = StringCalculator()
+    assert calc.multiply("//[*][%]\n2*3%4") == 24
+
+
+def test_multiply_ignores_large_numbers():
+    calc = StringCalculator()
+    assert calc.multiply("2,1001,3") == 6  
+
+
+def test_multiply_raises_on_negative():
+    calc = StringCalculator()
+    with pytest.raises(ValueError) as excinfo:
+        calc.multiply("2,-3,4")
+    assert "negatives not allowed" in str(excinfo.value)
+    assert "-3" in str(excinfo.value)
+
+
+def test_divide_single_number_returns_itself():
+    calc = StringCalculator()
+    assert calc.divide("10") == 10
+
+
+def test_divide_empty_string_returns_zero():
+    calc = StringCalculator()
+    assert calc.divide("") == 0
+
+
+def test_divide_with_newlines_and_commas():
+    calc = StringCalculator()
+    assert calc.divide("20\n2,2") == 5  
+
+
+def test_divide_with_custom_delimiter():
+    calc = StringCalculator()
+    assert calc.divide("//;\n100;2;5") == 10  
+
+
+def test_divide_with_multi_char_delimiter():
+    calc = StringCalculator()
+    assert calc.divide("//[***]\n100***2***5") == 10
+
+
+def test_divide_with_multiple_delimiters():
+    calc = StringCalculator()
+    assert calc.divide("//[*][%]\n100*2%5") == 10
+
+
+def test_divide_ignores_numbers_greater_than_1000():
+    calc = StringCalculator()
+    assert calc.divide("10000,10") == 10  
+    assert calc.divide("1000,10") == 100  
+
+
+def test_divide_raises_on_zero_division():
+    calc = StringCalculator()
+    with pytest.raises(ZeroDivisionError):
+        calc.divide("10,0")
+
+
+def test_divide_raises_on_negative():
+    calc = StringCalculator()
+    with pytest.raises(ValueError) as excinfo:
+        calc.divide("10,-2")
+    assert "negatives not allowed" in str(excinfo.value)
+    assert "-2" in str(excinfo.value)
