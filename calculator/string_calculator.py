@@ -2,13 +2,21 @@ class StringCalculator:
     def __init__(self):
         self.call_count = 0
 
-    def _extract_delimiters_and_numbers(self, input_str: str):
-        delimiters = [",", "\n"]
-        if input_str.startswith("//"):
-            delimiter_line, input_str = input_str.split("\n", 1)
-            custom_delim = delimiter_line[2:]
-            delimiters.append(custom_delim)
-        return delimiters, input_str
+    def _extract_delimiters_and_numbers(self, numbers: str) -> tuple[list[str], str]:
+        
+        if numbers.startswith("//"):
+            delimiter_part, numbers = numbers.split("\n", 1)
+            delimiter_part = delimiter_part[2:]
+
+            if delimiter_part.startswith("["):
+                import re
+                delimiters = re.findall(r"\[(.*?)\]", delimiter_part)
+            else:
+                delimiters = [delimiter_part]
+        else:
+            delimiters = [",", "\n"]
+
+        return delimiters, numbers
 
     def _ignore_large_numbers(self, numbers: list[int]) -> list[int]:
         return [n for n in numbers if n <= 1000]
